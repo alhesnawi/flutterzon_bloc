@@ -151,13 +151,25 @@ productRouter.get("/api/deal-of-the-day", auth, async (req, res) => {
     }
 })
 
+// Get featured products
+productRouter.get('/api/products/featured', auth, async (req, res) => {
+    try {
+        const products = await Product.find({ featured: true }).limit(20);
+        res.json(products);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
 
-
-
-
-
-
+// Get trending products
+productRouter.get('/api/products/trending', auth, async (req, res) => {
+    try {
+        const products = await Product.find({ trending: true }).limit(20);
+        res.json(products);
+    } catch (e) {
+        res.status(500).json({error: e.message});
+    }
+});
 
 
 module.exports = productRouter;
-

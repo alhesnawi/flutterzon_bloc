@@ -33,6 +33,30 @@ const productSchema = mongoose.Schema({
 
     ratings : [ratingSchema],
     
+    featured: {
+        type: Boolean,
+        default: false,
+    },
+    
+    trending: {
+        type: Boolean,
+        default: false,
+    },
+    
+    lowStockThreshold: {
+        type: Number,
+        default: 10,
+    },
+    
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 

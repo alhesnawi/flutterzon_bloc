@@ -156,8 +156,102 @@ async function fetchCategoryWiseProductEarning(category){
     return earnings;
 }
 
+// Update product featured/trending status
+adminRouter.post("/admin/update-product-flags", admin, async (req, res) => {
+    try {
+        const { id, featured, trending } = req.body;
+        
+        let product = await Product.findById(id);
+        
+        if (featured !== undefined) product.featured = featured;
+        if (trending !== undefined) product.trending = trending;
+        product.updatedAt = Date.now();
+        
+        product = await product.save();
+        
+        res.json(product);
+    } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
 
+// Get low stock products
+adminRouter.get("/admin/low-stock-products", admin, async (req, res) => {
+    try {
+        const products = await Product.find({
+            $expr: { $lte: ["$quantity", "$lowStockThreshold"] }
+        }).sort({ quantity: 1 });
+        
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
+
+// Update stock threshold
+adminRouter.post("/admin/update-stock-threshold", admin, async (req, res) => {
+    try {
+        const { id, threshold } = req.body;
+        
+        let product = await Product.findById(id);
+        product.lowStockThreshold = threshold;
+        product.updatedAt = Date.now();
+        
+        product = await product.save();
+        
+        res.json(product);
+    } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
+
+// Duplicate product
+adminRouter.post("/admin/duplicate-product", admin, async (req, res) => {
+    try {
+        const { id } = req.body;
+        
+        const originalProduct = await Product.findById(id);
+        
+        if (!originalProduct) {
+            return res.status(404).json({error: "Product not found"});
+        }
+        
+        const duplicatedProduct = new Product({
+            name: originalProduct.name + " (Copy)",
+            description: originalProduct.description,
+            images: originalProduct.images,
+            quantity: originalProduct.quantity,
+            price: originalProduct.price,
+            category: originalProduct.category,
+            featured: false,
+            trending: false,
+            lowStockThreshold: originalProduct.lowStockThreshold,
+        });
+        
+        const savedProduct = await duplicatedProduct.save();
+        
+        res.json(savedProduct);
+    } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
+
+// Update product stock
+adminRouter.post("/admin/update-product-stock", admin, async (req, res) => {
+    try {
+        const { id, quantity } = req.body;
+        
+        let product = await Product.findById(id);
+        product.quantity = quantity;
+        product.updatedAt = Date.now();
+        
+        product = await product.save();
+        
+        res.json(product);
+    } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
 
 
 module.exports = adminRouter;
-
