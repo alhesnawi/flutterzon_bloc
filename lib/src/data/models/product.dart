@@ -12,16 +12,27 @@ class Product extends Equatable {
   final double price;
   final String? id;
   final List<Rating>? rating;
+  final bool? featured;
+  final bool? trending;
+  final int? lowStockThreshold;
+  final String? createdAt;
+  final String? updatedAt;
 
-  const Product(
-      {required this.name,
-      required this.description,
-      required this.quantity,
-      required this.images,
-      required this.category,
-      required this.price,
-      this.id,
-      this.rating});
+  const Product({
+    required this.name,
+    required this.description,
+    required this.quantity,
+    required this.images,
+    required this.category,
+    required this.price,
+    this.id,
+    this.rating,
+    this.featured,
+    this.trending,
+    this.lowStockThreshold,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -33,25 +44,36 @@ class Product extends Equatable {
       'price': price,
       'id': id,
       'rating': rating,
+      'featured': featured,
+      'trending': trending,
+      'lowStockThreshold': lowStockThreshold,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-        name: map['name'] ?? '',
-        description: map['description'] ?? '',
-        quantity: map['quantity']?.toInt() ?? 0,
-        images: List<String>.from(map['images']),
-        category: map['category'] ?? '',
-        price: map['price']?.toDouble() ?? 0.0,
-        id: map['_id'],
-        rating: map['ratings'] != null
-            ? List<Rating>.from(
-                map['ratings']?.map(
-                  (x) => Rating.fromMap(x),
-                ),
-              )
-            : null);
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      quantity: map['quantity']?.toInt() ?? 0,
+      images: List<String>.from(map['images']),
+      category: map['category'] ?? '',
+      price: map['price']?.toDouble() ?? 0.0,
+      id: map['_id'],
+      rating: map['ratings'] != null
+          ? List<Rating>.from(
+              map['ratings']?.map(
+                (x) => Rating.fromMap(x),
+              ),
+            )
+          : null,
+      featured: map['featured'],
+      trending: map['trending'],
+      lowStockThreshold: map['lowStockThreshold']?.toInt(),
+      createdAt: map['createdAt'],
+      updatedAt: map['updatedAt'],
+    );
   }
 
   String toJson() => json.encode(toMap());
@@ -60,6 +82,19 @@ class Product extends Equatable {
       Product.fromMap(json.decode(source));
 
   @override
-  List<Object?> get props =>
-      [name, description, quantity, images, category, price, id, rating];
+  List<Object?> get props => [
+        name,
+        description,
+        quantity,
+        images,
+        category,
+        price,
+        id,
+        rating,
+        featured,
+        trending,
+        lowStockThreshold,
+        createdAt,
+        updatedAt
+      ];
 }

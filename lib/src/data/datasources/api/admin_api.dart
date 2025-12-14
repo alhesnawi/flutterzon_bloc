@@ -163,4 +163,83 @@ class AdminApi {
       throw Exception(e.toString());
     }
   }
+
+  Future<http.Response> adminUpdateProductFlags({
+    required String productId,
+    bool? featured,
+    bool? trending,
+  }) async {
+    final String token = await getToken();
+    try {
+      Map<String, dynamic> body = {'id': productId};
+      if (featured != null) body['featured'] = featured;
+      if (trending != null) body['trending'] = trending;
+
+      http.Response res = await client.post(
+        Uri.parse(adminUpdateProductFlagsUri),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+        body: jsonEncode(body),
+      );
+      return res;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<http.Response> adminGetLowStockProducts() async {
+    final String token = await getToken();
+    try {
+      http.Response res = await client.get(
+        Uri.parse(adminLowStockProductsUri),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+      );
+      return res;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<http.Response> adminDuplicateProduct(
+      {required String productId}) async {
+    final String token = await getToken();
+    try {
+      http.Response res = await client.post(
+        Uri.parse(adminDuplicateProductUri),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+        body: jsonEncode({'id': productId}),
+      );
+      return res;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<http.Response> adminUpdateProductStock({
+    required String productId,
+    required int quantity,
+  }) async {
+    final String token = await getToken();
+    try {
+      http.Response res = await client.post(
+        Uri.parse(adminUpdateProductStockUri),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        },
+        body: jsonEncode({'id': productId, 'quantity': quantity}),
+      );
+      return res;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

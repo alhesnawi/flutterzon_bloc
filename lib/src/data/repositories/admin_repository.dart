@@ -278,4 +278,74 @@ class AdminRepository {
       throw Exception(e.toString());
     }
   }
+
+  Future<void> adminUpdateProductFlags({
+    required String productId,
+    bool? featured,
+    bool? trending,
+  }) async {
+    try {
+      http.Response res = await adminApi.adminUpdateProductFlags(
+        productId: productId,
+        featured: featured,
+        trending: trending,
+      );
+
+      if (res.statusCode != 200) {
+        throw Exception(jsonDecode(res.body)['error']);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<Product>> adminGetLowStockProducts() async {
+    try {
+      http.Response res = await adminApi.adminGetLowStockProducts();
+
+      if (res.statusCode == 200) {
+        List<Product> products = [];
+        for (int i = 0; i < jsonDecode(res.body).length; i++) {
+          products.add(Product.fromJson(jsonEncode(jsonDecode(res.body)[i])));
+        }
+        return products;
+      } else {
+        throw Exception(jsonDecode(res.body)['error']);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> adminDuplicateProduct({required String productId}) async {
+    try {
+      http.Response res =
+          await adminApi.adminDuplicateProduct(productId: productId);
+
+      if (res.statusCode != 200) {
+        throw Exception(jsonDecode(res.body)['error']);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> adminUpdateProductStock({
+    required String productId,
+    required int quantity,
+  }) async {
+    try {
+      http.Response res = await adminApi.adminUpdateProductStock(
+        productId: productId,
+        quantity: quantity,
+      );
+
+      if (res.statusCode != 200) {
+        throw Exception(jsonDecode(res.body)['error']);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
+
